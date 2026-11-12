@@ -333,11 +333,19 @@ export type AdminOverview = {
   occupancy: { day: string; booked: number }[];
 }
 
-type Table<Row> = {
+type Relationship<Column extends string, Target extends string> = {
+  foreignKeyName: string;
+  columns: [Column];
+  isOneToOne: false;
+  referencedRelation: Target;
+  referencedColumns: ['id'];
+};
+
+type Table<Row, Rel extends readonly unknown[] = []> = {
   Row: Row;
   Insert: Partial<Row>;
   Update: Partial<Row>;
-  Relationships: [];
+  Relationships: Rel;
 };
 
 type Empty = { [_ in never]: never };
@@ -346,25 +354,59 @@ export type Database = {
   public: {
     Tables: {
       profiles: Table<Profile>;
-      personal_settings: Table<PersonalSettings>;
+      personal_settings: Table<
+        PersonalSettings,
+        [Relationship<'profile_id', 'profiles'>]
+      >;
       services: Table<Service>;
-      students: Table<Student>;
+      students: Table<Student, [Relationship<'profile_id', 'profiles'>]>;
       availability: Table<Availability>;
       blocked_times: Table<BlockedTime>;
-      appointments: Table<Appointment>;
-      training_plans: Table<TrainingPlan>;
-      training_days: Table<TrainingDay>;
-      exercises: Table<Exercise>;
-      exercise_logs: Table<ExerciseLog>;
-      physical_assessments: Table<PhysicalAssessment>;
-      body_measurements: Table<BodyMeasurement>;
-      progress_photos: Table<ProgressPhoto>;
-      subscriptions: Table<Subscription>;
-      payments: Table<Payment>;
+      appointments: Table<
+        Appointment,
+        [Relationship<'student_id', 'students'>, Relationship<'service_id', 'services'>]
+      >;
+      training_plans: Table<TrainingPlan, [Relationship<'student_id', 'students'>]>;
+      training_days: Table<TrainingDay, [Relationship<'plan_id', 'training_plans'>]>;
+      exercises: Table<Exercise, [Relationship<'day_id', 'training_days'>]>;
+      exercise_logs: Table<
+        ExerciseLog,
+        [
+          Relationship<'student_id', 'students'>,
+          Relationship<'exercise_id', 'exercises'>,
+          Relationship<'day_id', 'training_days'>,
+        ]
+      >;
+      physical_assessments: Table<
+        PhysicalAssessment,
+        [Relationship<'student_id', 'students'>]
+      >;
+      body_measurements: Table<
+        BodyMeasurement,
+        [Relationship<'assessment_id', 'physical_assessments'>]
+      >;
+      progress_photos: Table<
+        ProgressPhoto,
+        [
+          Relationship<'student_id', 'students'>,
+          Relationship<'assessment_id', 'physical_assessments'>,
+        ]
+      >;
+      subscriptions: Table<Subscription, [Relationship<'student_id', 'students'>]>;
+      payments: Table<
+        Payment,
+        [
+          Relationship<'student_id', 'students'>,
+          Relationship<'subscription_id', 'subscriptions'>,
+        ]
+      >;
       expenses: Table<Expense>;
-      notifications: Table<Notification>;
-      messages: Table<Message>;
-      testimonials: Table<Testimonial>;
+      notifications: Table<Notification, [Relationship<'profile_id', 'profiles'>]>;
+      messages: Table<
+        Message,
+        [Relationship<'author_id', 'profiles'>, Relationship<'student_id', 'students'>]
+      >;
+      testimonials: Table<Testimonial, [Relationship<'student_id', 'students'>]>;
     };
     Views: Empty;
     Functions: {

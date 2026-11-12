@@ -204,6 +204,36 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  /* Impressão e exportação em PDF pelo navegador */
+  @media print {
+    aside,
+    header button,
+    nav,
+    .no-print {
+      display: none !important;
+    }
+    body {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    .hpe-card {
+      border: 1px solid #ddd !important;
+      box-shadow: none !important;
+      background: #fff !important;
+      break-inside: avoid;
+    }
+    .lg\:pl-\[17rem\] {
+      padding-left: 0 !important;
+    }
+    .text-hpe-muted,
+    .text-hpe-white {
+      color: #333 !important;
+    }
+    a[href]::after {
+      content: '';
+    }
+  }
+
   /* Respeita quem prefere menos movimento */
   @media (prefers-reduced-motion: reduce) {
     *,
