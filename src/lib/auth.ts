@@ -48,7 +48,7 @@ export async function requireStudent(): Promise<Session & { student: Student }> 
     .eq('profile_id', session.userId)
     .maybeSingle();
 
-  if (!student) redirect('/aluno/sem-vinculo');
+  if (!student) redirect('/sem-vinculo');
 
   return { ...session, student };
 }
