@@ -148,6 +148,12 @@ As migrations estão em `supabase/migrations/`, na ordem em que devem rodar:
 | `…000300_storage.sql` | Buckets e políticas de arquivos |
 | `…000400_seed_catalog.sql` | Os 7 serviços e uma grade de horários padrão |
 
+As migrations foram executadas e testadas contra um PostgreSQL 16 real: 20
+tabelas, 43 políticas RLS (todas as tabelas com RLS ativo), 3 buckets, 7
+serviços e 11 janelas de horário. Os GRANTs de `anon` e `authenticated` estão
+explícitos no arquivo de RLS, para o schema funcionar igual em qualquer projeto
+ou restauração de backup.
+
 **Opção A — SQL Editor:** abra cada arquivo, cole no SQL Editor do Supabase e
 execute na ordem acima.
 
@@ -206,6 +212,19 @@ habilitado. Desabilite o cadastro público se quiser que só o Patrick crie cont
 > Se o aluno criar conta com um e-mail diferente do cadastrado, ele cai em
 > `/sem-vinculo` com a instrução do que fazer. Basta o Patrick registrar o e-mail
 > correto no cadastro para o vínculo acontecer.
+
+### Se a conta do Patrick entrou como aluno
+
+Acontece quando o usuário é criado **antes** de `app.admin_email` ser definido.
+Promova pelo SQL Editor:
+
+```sql
+update public.profiles set role = 'admin' where email = 'patrick@exemplo.com';
+```
+
+Funciona porque no SQL Editor não há sessão de usuário. Um aluno logado que
+tente o mesmo comando recebe `Alteração de permissão não autorizada.` — o
+trigger `guard_profile_role` bloqueia a escalada de privilégio.
 
 ---
 

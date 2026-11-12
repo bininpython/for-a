@@ -251,7 +251,7 @@ begin
     )
     values (
       v_student_id, p_service_id, p_starts_at, v_ends_at,
-      case when public.is_admin() then 'confirmed' else 'requested' end,
+      (case when public.is_admin() then 'confirmed' else 'requested' end)::appointment_status,
       p_student_notes, auth.uid()
     )
     returning * into v_row;

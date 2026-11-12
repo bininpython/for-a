@@ -39,7 +39,12 @@ create policy "profiles: editar o próprio perfil"
   using (id = auth.uid() or public.is_admin())
   with check (id = auth.uid() or public.is_admin());
 
--- A coluna `role` nunca é alterável pelo próprio usuário.
+-- A coluna `role` nunca é alterável por um usuário logado que não seja admin.
+--
+-- `auth.uid()` é nulo quando a alteração vem do SQL Editor, de uma migration
+-- ou da chave de serviço — caminhos que já exigem acesso administrativo ao
+-- projeto. É por ali que se promove o primeiro administrador. Qualquer
+-- requisição com sessão de usuário cai na verificação de permissão.
 create or replace function public.guard_profile_role()
 returns trigger
 language plpgsql
@@ -47,7 +52,9 @@ security definer
 set search_path = public
 as $$
 begin
-  if new.role is distinct from old.role and not public.is_admin() then
+  if new.role is distinct from old.role
+     and auth.uid() is not null
+     and not public.is_admin() then
     raise exception 'Alteração de permissão não autorizada.' using errcode = '42501';
   end if;
   return new;
@@ -256,3 +263,21 @@ create policy "testimonials: leitura pública dos publicados"
 create policy "testimonials: personal administra todos"
   on public.testimonials for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
+
+-- ─── Privilégios de tabela ──────────────────────────────────────────────────
+-- O Supabase costuma conceder isto por padrão, mas deixamos explícito para que
+-- o schema funcione igual em qualquer projeto ou restauração de backup.
+--
+-- Estes GRANTs liberam o *verbo*; quais linhas cada papel enxerga continua
+-- sendo decidido pelas políticas acima. Sem política que permita, o GRANT não
+-- dá acesso a nada.
+
+grant usage on schema public to anon, authenticated;
+
+grant select on all tables in schema public to anon, authenticated;
+grant insert, update, delete on all tables in schema public to authenticated;
+
+alter default privileges in schema public
+  grant select on tables to anon, authenticated;
+alter default privileges in schema public
+  grant insert, update, delete on tables to authenticated;
