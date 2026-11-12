@@ -1,0 +1,218 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hpe-black: #050505;
+  --hpe-black-2: #101010;
+  --hpe-gray: #1a1a1a;
+  --hpe-orange: #ff6500;
+  --hpe-orange-2: #ff8500;
+  --hpe-muted: #a0a0a0;
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-hpe-black text-hpe-white antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+  }
+
+  ::selection {
+    background: rgba(255, 101, 0, 0.3);
+  }
+
+  /* Barra de rolagem discreta, no tom da marca */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--hpe-black);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 999px;
+    border: 2px solid var(--hpe-black);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a3a;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--hpe-orange);
+    outline-offset: 2px;
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator,
+  input[type='time']::-webkit-calendar-picker-indicator,
+  input[type='month']::-webkit-calendar-picker-indicator {
+    filter: invert(1) opacity(0.5);
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* ─── Tipografia de marca ──────────────────────────────────────────────── */
+  .hpe-display {
+    @apply font-display font-extrabold uppercase tracking-tight;
+  }
+
+  .hpe-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-hpe-orange;
+  }
+
+  .hpe-section-title {
+    @apply hpe-display text-3xl leading-[1.05] sm:text-4xl lg:text-5xl;
+  }
+
+  /* ─── Superfícies ──────────────────────────────────────────────────────── */
+  .hpe-card {
+    @apply rounded-2xl border border-white/[0.07] bg-hpe-black-2/80 shadow-card
+           backdrop-blur-sm;
+  }
+
+  .hpe-card-hover {
+    @apply transition-all duration-500 ease-hpe hover:-translate-y-1
+           hover:border-hpe-orange/30 hover:shadow-glow;
+  }
+
+  .hpe-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  /* ─── Botões ───────────────────────────────────────────────────────────── */
+  .hpe-btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl
+           px-5 py-3 text-sm font-semibold uppercase tracking-wider
+           transition-all duration-300 ease-hpe
+           disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .hpe-btn-primary {
+    @apply hpe-btn bg-hpe-orange text-hpe-black
+           hover:bg-hpe-orange-2 hover:shadow-glow active:scale-[0.98];
+  }
+
+  .hpe-btn-ghost {
+    @apply hpe-btn border border-white/15 bg-white/[0.02] text-hpe-white
+           hover:border-hpe-orange/50 hover:bg-hpe-orange/[0.07] active:scale-[0.98];
+  }
+
+  .hpe-btn-subtle {
+    @apply hpe-btn bg-white/[0.04] text-hpe-muted normal-case tracking-normal
+           hover:bg-white/[0.08] hover:text-hpe-white;
+  }
+
+  .hpe-btn-danger {
+    @apply hpe-btn border border-red-500/30 bg-red-500/10 text-red-300
+           hover:border-red-500/60 hover:bg-red-500/20;
+  }
+
+  .hpe-btn-sm {
+    @apply px-3.5 py-2 text-xs;
+  }
+
+  /* ─── Formulários ──────────────────────────────────────────────────────── */
+  .hpe-label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wider text-hpe-muted;
+  }
+
+  .hpe-input {
+    @apply w-full rounded-xl border border-white/10 bg-hpe-black px-4 py-3 text-sm
+           text-hpe-white placeholder:text-white/25
+           transition-colors duration-200
+           focus:border-hpe-orange/60 focus:outline-none focus:ring-0
+           disabled:opacity-50;
+  }
+
+  .hpe-select {
+    @apply hpe-input appearance-none bg-[length:1rem] bg-[right_0.9rem_center]
+           bg-no-repeat pr-10;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A0A0A0' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  .hpe-textarea {
+    @apply hpe-input min-h-[7rem] resize-y leading-relaxed;
+  }
+
+  .hpe-field-error {
+    @apply mt-1.5 text-xs text-red-400;
+  }
+
+  /* ─── Tabelas ──────────────────────────────────────────────────────────── */
+  .hpe-table {
+    @apply w-full border-collapse text-sm;
+  }
+  .hpe-table thead th {
+    @apply border-b border-white/10 px-4 py-3 text-left text-[11px] font-semibold
+           uppercase tracking-wider text-hpe-muted;
+  }
+  .hpe-table tbody td {
+    @apply border-b border-white/[0.05] px-4 py-3.5 align-middle;
+  }
+  .hpe-table tbody tr {
+    @apply transition-colors hover:bg-white/[0.025];
+  }
+
+  /* ─── Texturas de fundo ────────────────────────────────────────────────── */
+  .hpe-grid-bg {
+    @apply bg-hpe-grid;
+    background-size: 56px 56px;
+    mask-image: radial-gradient(70% 60% at 50% 0%, #000 0%, transparent 100%);
+  }
+
+  .hpe-noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hpe-skeleton {
+    @apply relative overflow-hidden rounded-lg bg-white/[0.05];
+  }
+  .hpe-skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer
+           bg-gradient-to-r from-transparent via-white/[0.07] to-transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* Respeita quem prefere menos movimento */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

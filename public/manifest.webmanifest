@@ -1,0 +1,32 @@
+{
+  "name": "HPE — Patrick Personal",
+  "short_name": "HPE",
+  "description": "Treinamento personalizado, acompanhamento profissional e evolução constante.",
+  "start_url": "/aluno",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "lang": "pt-BR",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-hpe.png",
+      "sizes": "342x172",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Meu treino", "url": "/aluno/treino" },
+    { "name": "Agendar", "url": "/agendar" },
+    { "name": "Minha evolução", "url": "/aluno/evolucao" }
+  ]
+}
